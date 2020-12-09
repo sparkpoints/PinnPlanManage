@@ -7,7 +7,7 @@ import re
 from Pinnutil.parse_single_pinn_file import parse_single_pinn_file
 
 
-class scan_standard_pinn_DB(object):
+class scanPinnWholeDataBase(object):
     def __init__(self, root_path, record_file):
         self.root_path = root_path
         self.record_file = record_file
@@ -95,7 +95,7 @@ class scan_standard_pinn_DB(object):
 if __name__ == "__main__":
     root_path = "/media/PinnSETemp/NewPatients"
     record_file = "/home/peter/testlog"
-    obj2 = scan_standard_pinn_DB(root_path, record_file)
+    obj2 = scanPinnWholeDataBase(root_path, record_file)
     institution_list = obj2.get_institution_list()
     i = 0
     for inst in institution_list:

@@ -14,17 +14,17 @@ class ftpExt(object):
         # self.ftp.set_pasv(0)      #0主动模式 1 #被动模式
         self.ftp.connect(host, port)
 
-    def Login(self, user, passwd):
+    def login(self, user, passwd):
         self.ftp.login(user, passwd)
         print(self.ftp.welcome)
 
-    def DownLoadFile(self, LocalFile, RemoteFile):
+    def downLoadFile(self, LocalFile, RemoteFile):
         file_handler = open(LocalFile, 'w')
         self.ftp.retrlines("RETR %s" % (RemoteFile), file_handler.write)
         file_handler.close()
         return True
 
-    def UpLoadFile(self, LocalFile, RemoteFile):
+    def upLoadFile(self, LocalFile, RemoteFile):
         if os.path.islink(LocalFile):
             return False
         if not os.path.isfile(LocalFile):
@@ -34,7 +34,7 @@ class ftpExt(object):
         file_handler.close()
         return True
 
-    def UpLoadFileTree(self, LocalDir, RemoteDir):
+    def upLoadFileTree(self, LocalDir, RemoteDir):
         if not os.path.isdir(LocalDir):
             return False
         # print "LocalDir:", LocalDir
@@ -55,13 +55,13 @@ class ftpExt(object):
         for Local in LocalNames:
             src = os.path.join(LocalDir, Local)
             if os.path.isdir(src):
-                self.UpLoadFileTree(src, remotedirs)
+                self.upLoadFileTree(src, remotedirs)
             else:
-                self.UpLoadFile(src, Local)
+                self.upLoadFile(src, Local)
         self.ftp.cwd(oldpath)
         return
 
-    def DownLoadFileTree(self, LocalDir, RemoteDir):
+    def downloadFileTree(self, LocalDir, RemoteDir):
         print("remoteDir:", RemoteDir)
         if not os.path.isdir(LocalDir):
             os.makedirs(LocalDir)
@@ -72,9 +72,9 @@ class ftpExt(object):
         for file in RemoteNames:
             Local = os.path.join(LocalDir, file)
             if self.isDir(file):
-                self.DownLoadFileTree(Local, file)
+                self.downloadFileTree(Local, file)
             else:
-                self.DownLoadFile(Local, file)
+                self.downLoadFile(Local, file)
         self.ftp.cwd("..")
         return
 
@@ -111,9 +111,9 @@ class ftpExt(object):
 
 if __name__ == "__main__":
     ftp = ftpExt('*****')
-    ftp.Login('***', '***')
+    ftp.login('***', '***')
 
-    ftp.DownLoadFileTree('del', '/del1')  # ok
-    ftp.UpLoadFileTree('del', "/del1")
+    ftp.downloadFileTree('del', '/del1')  # ok
+    ftp.upLoadFileTree('del', "/del1")
     ftp.close()
     print('end\n')

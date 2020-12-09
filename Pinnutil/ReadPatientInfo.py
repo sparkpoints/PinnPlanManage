@@ -1,32 +1,30 @@
 #! /usr/bin/env python
 # coding=utf-8
 # input: file "/home/peter/Patient_6527/Patient"
-# output：a dict = obj.get_patient_data
+# output：a dict = obj.getPatientData
 import os
 import re
-
-
-class parse_single_pinn_file(object):
+class readPatientInfo(object):
     '''parse simple pinnacle TPS raw data file,
     like:"patient" text format file
     return a dict object:dict[var_name] = value'''
 
-    def __init__(self, file_path):
-        self.file = file_path
-        self.patient_data = None
+    def __init__(self, filePath):
+        self.file = filePath
+        self.patientData = None
 
         if os.path.isfile(self.file):
-            self.file_obj = open(self.file)
-            self.patient_data = self.readsinglefile(self.file_obj)
-            self.file_obj.close()
+            self.fileObj = open(self.file)
+            self.patientData = self.readSinglefile(self.fileObj)
+            self.fileObj.close()
 
-    def get_patient_data(self):
-        return self.patient_data
+    def getPatientData(self):
+        return self.patientData
 
-    def readsinglefile(self, file_obj):
+    def readSinglefile(self, fileObj):
         PatientData = {}
-        if file_obj:
-            for line in file_obj.readlines():
+        if fileObj:
+            for line in fileObj.readlines():
                 if not re.search('\=', line):
                     '''only parse line in style "var_name = value;",
                     escape all other lines'''
@@ -41,7 +39,7 @@ class parse_single_pinn_file(object):
                     return PatientData
                 elif re.search('^  CreateTimeStamp*', line):
                     '''there many createTimestamp,only record this line'''
-                    (key, value) = readSingleValue(line)
+                    (key, value) = self.readSingleValue(line)
                     PatientData[key] = value
                 else:
                     (key, value) = self.readSingleValue(line)
@@ -60,5 +58,5 @@ class parse_single_pinn_file(object):
 
 if __name__ == "__main__":
     patientfile = "/home/peter/Patient_6527/Patient"
-    obj1 = parse_single_pinn_file(patientfile)
-    print(obj1.get_patient_data())
+    obj1 = readPatientInfo(patientfile)
+    print(obj1.getPatientData())
