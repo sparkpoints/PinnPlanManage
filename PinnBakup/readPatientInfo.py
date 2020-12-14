@@ -14,7 +14,7 @@ class readPatientInfo(object):
         self.patientData = None
 
         if os.path.isfile(self.file):
-            self.fileObj = open(self.file)
+            self.fileObj = open(self.file,encoding='unicode_escape')
             self.patientData = self.readSinglefile(self.fileObj)
             self.fileObj.close()
 
@@ -57,6 +57,6 @@ class readPatientInfo(object):
 
 
 if __name__ == "__main__":
-    patientfile = "/home/peter/Patient_6527/Patient"
+    patientfile = "/home/pyang/bin/data/Patient_3661/Patient"
     obj1 = readPatientInfo(patientfile)
     print(obj1.getPatientData())
