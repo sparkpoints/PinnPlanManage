@@ -5,4 +5,3 @@ Scripts for Pinnacle3 TPS plan data manage, including single or batch patient pl
 任务安排
 1，对旧程序进行整理，命名规则和文件目录
 2，将程序拆分为3个模块
-    1. 

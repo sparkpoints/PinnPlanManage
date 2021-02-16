@@ -6,15 +6,61 @@
 import os
 import re
 import random
+import shutil
+import subprocess
 from readPatientInfo import readPatientInfo
 #from Pinnutil.scan_standard_pinn_DB import scan_standard_pinn_DB
+"""
+Solaris Shell tar cmd:
+gnutar -c -h -f /home/p3rtp/aa.1.tar --exclude=.auto.plan.Trial.binary.* 
+-C /usr/local/adacnew/Patients Institution 
+-C /usr/local/adacnew/Patients Insitution_3194/Mount_0/Patient_41099 2>&1
+"""
+
+
+
 DEBUG = 0
 MKDIR = '/usr/bin/mkdir'
-TAR = '/usr/bin/tar'
+TAR = '/usr/bin/gnutar'
 COPY = '/usr/bin/cp'
 GZIP = '/usr/bin/gzip'
 MOVE = '/usr/bin/mv'
 DELETE = '/usr/bin/rm'
+
+
+def cleanPinnOriData(poolpath):
+    """[clean 2 type temp files]
+        1. links to files 
+        2. autosave files
+    Args:
+        poolpath ([string]): [home dir of path]
+    """
+
+    MatchRegList = ['^.auto.plan*',
+                    '.ErrorLog$',
+                    '.Transcript$',
+                    '.defaults$',
+                    '.pinnbackup$',
+                    '^Institution.\d+',
+                    '^Patient.\d+',
+                    '\s*~\s*',
+                    '.json$']
+
+    for dirpath, dirname, filenames in os.walk(poolpath):
+        for file in filenames:
+            filepath = os.path.join(dirpath, file)
+            #type1:links file check
+            if os.path.islink(filepath):
+                os.remove(filepath)
+                continue
+            #type2:autosave files
+            for currentReg in MatchRegList:
+                if re.findall(currentReg, file):
+                    os.remove(filepath)
+                    print('del:%s\n' % filepath)
+        if dirname:
+            for currendir in dirname:
+                cleanPinnOriData(os.path.join(dirpath, currendir))
 
 class bakupOnePinnPatient(object):
     def __init__(self, headInfo=None, targetDir=None):
@@ -24,8 +70,6 @@ class bakupOnePinnPatient(object):
         if not os.path.isdir(targetDir):
             print("ERROR: %s is not exist\n" % targetDir)
 
-
-
     def createTarPackage(self):
         # if not self.targetDir:
         patientInfo = self.getPatientBasicInfo()
@@ -33,7 +77,8 @@ class bakupOnePinnPatient(object):
         if patientInfo:
             patHeadInfo = self.createPatientHeaderInfo(patientInfo)
         if patHeadInfo:
-            self.tarPackageObj = self.createTarFile(patientInfo, patHeadInfo)
+           return self.createTarFile(patientInfo, patHeadInfo)
+           
 
     def createPatientHeaderInfo(self, patInfoObj):
         source_file = self.headInfo
@@ -107,45 +152,51 @@ class bakupOnePinnPatient(object):
         os.chdir(current_header_path)
 
         patient_info = patInfoObj.getPatientData()
-        tarFile = patient_info['MedicalRecordNumber'] + '_' + patient_info['PatientID'] + '_' + patient_info['LastName'] + patient_info['FirstName'] + '_' + patient_info['MiddleName'] + '.tar'
+        tarName = patient_info['PatientID'] + '_' + \
+            patient_info['MedicalRecordNumber'] + '_' + \
+            patient_info['LastName'] + patient_info['FirstName'] + '_' + \
+            patient_info['MiddleName'] + '_' + \
+            str(random.randint(1, 1000)) + '.gtar'
 
-        tarName = ''.join(tarFile.split())
+        tarName = ''.join(tarName.split())
+        tarName = re.sub('%', '', tarName)
+        tarName = re.sub('#', '', tarName)
+        tarName = re.sub('&', '', tarName)
+        # tarName = re.sub('?', '', tarName)
         tarName = re.sub('`', '', tarName)
+
         tar_file_absPath = os.path.join(current_header_path, tarName)
 
         # Step1: tar header_file --'Institution'
-        command = TAR + ' -c ' + ' --format=gnu ' + \
-            ' -f ' + tar_file_absPath + ' Institution '
-        print('  Tar File:%s', tarName)
-        if not DEBUG:
-            os.system(command)
+        command = []
+        command.append(TAR)
+        command.append('-c')
+        command.append('-z')
+        command.append('-h')
+        command.append('-f')
+        command.append(tar_file_absPath)
+        command.append('--exclude=.auto.plan.Trial.binary.*')
+        command.append('-C')
+        command.append(current_header_path)
+        command.append('Institution')
+        command.append('-C')
+        command.append(os.path.dirname(data_dir))
+        command.append(os.path.basename(data_dir))
+       
+        try:
+            print("BAKUP:%s.........." % tarName)
+            subprocess.call(command)
+            return tar_file_absPath
+            # print("Sucess!\n")
+        except Exception as e:
+            print("BAKUP:%s.....Failed\n" % tarName)
 
-        # Step2: tar Patient Content directory "Institution_XXX/Mount_0/Patient_XXXX"
-        patient_data_path = os.path.split(data_dir)[0]
-        patient_data_dir = os.path.split(data_dir)[1]
-        os.chdir(patient_data_path)
-
-        command = TAR + ' -r ' + ' --format=gnu ' + ' -f ' + \
-            tar_file_absPath + ' ' + patient_data_dir
-        if not DEBUG:
-            os.system(command)
-
-        # Step3: compress tar file using gzip
-        os.chdir(current_header_path)
-        command = GZIP + ' ' + tarName
-
-        tarName = tarName + '.gz'
-        tar_gzip_file_absPath = os.path.join(current_header_path, tarName)
-        if not os.path.isfile(tar_gzip_file_absPath):
-            os.system(command)
-        os.chdir(path_backup)
-        return tar_gzip_file_absPath
 
 
 if __name__ == "__main__":
-    work_path = "/home/pyang/bin/data/"
+    work_path = "/home/p3rtp/bin/bakup/"
     headInfo = os.path.join(work_path, 'institution')
-    patient_file = os.path.join(work_path, "Patient_3661")
+    patient_file = os.path.join(work_path, 'Mount_0', "Patient_35436")
     obj3 = bakupOnePinnPatient(headInfo, patient_file)
-    print(obj3.createTarPackage())
+    obj3.createTarPackage()
     print("finish") 

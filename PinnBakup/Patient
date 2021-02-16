@@ -1,0 +1,122 @@
+PatientID = 35436;
+PatientPath = "Institution_3170/Mount_0/Patient_35436";
+LastName = "Zhou";
+FirstName = "Guiying";
+MiddleName = "NPC";
+MedicalRecordNumber = "510038";
+EncounterNumber = "";
+PrimaryPhysician = "";
+AttendingPhysician = "";
+ReferringPhysician = "MENGMAOBIN";
+RadiationOncologist = "Meng Maobin";
+Oncologist = "";
+Radiologist = "";
+Prescription = "";
+Disease = "";
+Diagnosis = "";
+Comment = "Neck IM ";
+NextUniquePlanID = 4;
+NextUniqueImageSetID = 2;
+Gender = "Female";
+DateOfBirth = "";
+ImageSetList ={
+  ImageSet ={
+    ImageSetID = 0;
+    PatientID = 35436;
+    ImageName = "ImageSet_0";
+    NameFromScanner = "";
+    ExamID = "42247234620";
+    StudyID = "54712";
+    Modality = "CT";
+    NumberOfImages = 138;
+    ScanTimeFromScanner = "2018-01-04 08:42:23";
+    FileName = "";
+    SeriesDescription = "";
+    MRN = "01748004";
+  };
+};
+PlanList ={
+  Plan ={
+    PlanID = 0;
+    ToolType = "Pinnacle^3";
+    PlanName = "Plan_1";
+    Physicist = "wqx";
+    Comment = "Room3,  VMAT2,  approved by Meng Maobin";
+    Dosimetrist = "jsp";
+    PrimaryCTImageSetID = 0;
+    FusionIDArray ={
+    };
+    PrimaryImageType = "Images";
+    PinnacleVersionDescription = "Pinnacle 9.8";
+    IsNewPlanPrefix = 1;
+    PlanIsLocked = 1;
+    OKForSyntegraInLaunchpad = 0;
+    ObjectVersion ={
+      WriteVersion = "Launch Pad: 9.8";
+      CreateVersion = "Launch Pad: 9.8";
+      LoginName = "p3rtp";
+      CreateTimeStamp = "2018-07-30 14:13:06";
+      WriteTimeStamp = "2018-10-14 13:55:50";
+      LastModifiedTimeStamp = "2018-07-30.15:54:18";
+    };
+  };
+  Plan ={
+    PlanID = 1;
+    ToolType = "Pinnacle^3";
+    PlanName = "CopyOf_1_Plan_1";
+    Physicist = "wqx";
+    Comment = "Room3,  VMAT2,  approved by Meng Maobin";
+    Dosimetrist = "jsp";
+    PrimaryCTImageSetID = 0;
+    FusionIDArray ={
+    };
+    PrimaryImageType = "Images";
+    PinnacleVersionDescription = "Pinnacle 9.8";
+    IsNewPlanPrefix = 1;
+    PlanIsLocked = 1;
+    OKForSyntegraInLaunchpad = 0;
+    ObjectVersion ={
+      WriteVersion = "Launch Pad: 9.8";
+      CreateVersion = "Launch Pad: 9.8";
+      LoginName = "p3rtp";
+      CreateTimeStamp = "2018-07-30 14:13:06";
+      WriteTimeStamp = "2018-10-14 13:55:50";
+      LastModifiedTimeStamp = "2018-07-30.15:54:18";
+    };
+  };
+  Plan ={
+    PlanID = 2;
+    ToolType = "Pinnacle^3";
+    PlanName = "Plan_1plus2";
+    Physicist = "wqx";
+    Comment = "Room3,  VMAT2,  approved by Meng Maobin";
+    Dosimetrist = "jsp";
+    PrimaryCTImageSetID = 0;
+    FusionIDArray ={
+    };
+    PrimaryImageType = "Images";
+    PinnacleVersionDescription = "Pinnacle 9.8";
+    IsNewPlanPrefix = 1;
+    PlanIsLocked = 1;
+    OKForSyntegraInLaunchpad = 0;
+    ObjectVersion ={
+      WriteVersion = "Launch Pad: 9.8";
+      CreateVersion = "Launch Pad: 9.8";
+      LoginName = "p3rtp";
+      CreateTimeStamp = "2018-07-30 14:13:06";
+      WriteTimeStamp = "2018-10-14 13:55:50";
+      LastModifiedTimeStamp = "2018-07-30.15:54:18";
+    };
+  };
+};
+ObjectVersion ={
+  WriteVersion = "Launch Pad: 9.8";
+  CreateVersion = "Launch Pad: 9.8";
+  LoginName = "p3rtp";
+  CreateTimeStamp = "2018-07-30 14:13:06";
+  WriteTimeStamp = "2018-10-14 13:55:50";
+  LastModifiedTimeStamp = "2018-07-30.15:54:18";
+};
+DirSize = 609.397;
+
+/* Æ */

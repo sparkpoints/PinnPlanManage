@@ -4,6 +4,7 @@
 # output：a dict = obj.getPatientData
 import os
 import re
+import io
 class readPatientInfo(object):
     '''parse simple pinnacle TPS raw data file,
     like:"patient" text format file
@@ -14,9 +15,10 @@ class readPatientInfo(object):
         self.patientData = None
 
         if os.path.isfile(self.file):
-            self.fileObj = open(self.file,encoding='unicode_escape')
-            self.patientData = self.readSinglefile(self.fileObj)
-            self.fileObj.close()
+            # self.fileObj = open(self.file,'r', encoding='utf-8')
+            with io.open(self.file, 'r', encoding='unicode_escape') as f:
+                self.patientData = self.readSinglefile(f)
+                # self.fileObj.close()
 
     def getPatientData(self):
         return self.patientData

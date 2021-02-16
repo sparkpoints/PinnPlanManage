@@ -6,13 +6,20 @@ import os
 import sys
 # sys.path.append('./Pinnutil')
 import logging
-import FTPModule
+# import FTPModule
 import shutil
 
-PINN_TRA_PATH = '/mnt/g/Pinn20102018'
+import numpy as np
+import pandas as pd
+import pypinyin
+
+
+PINN_TRA_PATH = '/mnt/g/Pinn2020/'
 WORKING_PATH = '/home/pyang/PinnWork/'
 LOCAL_DIR_PATH = os.path.join(WORKING_PATH, 'export')
-WANTED_LIST = os.path.join(WORKING_PATH, 'WantedList')
+WANTED_LIST = os.path.join(WORKING_PATH, 'WantedList.CSV')
+
+EXPORT_PATH = '/mnt/g/export/'
 
 FTP_IP = '172.31.28.202'
 FTP_USER = 'p3rtp'
@@ -40,7 +47,7 @@ def RetorePinnPatients(localDirPath, wantedFile, targetDirPath, loggerHand, ftpM
         if curMRN in wantedList:
             loggerHand.info(tarFile)
             shutil.copyfile(os.path.join(PINN_TRA_PATH, tarFile),
-                            os.path.join(WORKING_PATH, tarFile))
+                            os.path.join(EXPORT_PATH, tarFile))
             # if ftpHandle and not ftpHandle.isExist(tarFile, '.'):
             #     #print("upload file %s", ind, tarFile)
             #     loggerHand.info("uploadFile(%d of %d):%s",
@@ -48,6 +55,75 @@ def RetorePinnPatients(localDirPath, wantedFile, targetDirPath, loggerHand, ftpM
             #     ind += 1
             #     ftpHandle.UpLoadFile(os.path.join(
             #         localDirPath, tarFile), tarFile)
+
+# 不带声调的(style=pypinyin.NORMAL)
+def pinyin(word):
+    s = ''
+    for i in pypinyin.pinyin(word, style=pypinyin.NORMAL):
+        s += ''.join(i)
+    return s
+
+def restPatBatch(restListFile,oriDataPool,exportDir,logger):
+    try:
+        df = pd.read_csv(restListFile, encoding='gbk')
+    except IOError:
+        raise "No such file%s"%restListFile
+    
+    mrnList = []
+    nameList = []
+    if 'Name' in df.columns:
+        # nameList = df['Name']
+        for name in df['Name']:
+            strName = pinyin(name)
+            # logger.info(strName)
+            nameList.append(strName)
+
+    if 'MRN' in df.columns:
+        mrnList = df['MRN']
+    logger.info(len(mrnList))
+    findFiles = []
+    noFindF = []
+
+
+    # targetList = []
+    for root, dirs, files in os.walk(oriDataPool):
+        # targetList = files   
+        logger.info(len(files))
+        if len(mrnList) == len(nameList):
+            for mrn, name in zip(mrnList, nameList):
+                findMark = 0
+                for file in files:
+                    mrnStr = '_' + str(mrn) + '_'
+                    nameStr = '_' + str(name) + '_'
+                    combStr = '_' + str(mrn) + '_' + str(name) + '_'
+                    if combStr in file.lower():
+                        findMark = 1
+                        findFiles.append(os.path.join(root,file))
+                        shutil.copy(os.path.join(root, file),
+                                    os.path.join(exportDir, file))
+                        logger.info('Find:%s:%s:%s' % (mrn, name, file))
+                        break
+                    elif (mrnStr in file.lower()) or (nameStr in file.lower()):
+                        findMark = 1
+                        findFiles.append(file)
+                        shutil.copy(os.path.join(root, file),
+                                    os.path.join(exportDir, file))
+                        logger.info('Find:%s:%s:%s' % (mrn, name,file))
+
+                if not findMark:
+                    noFindF.append(mrn)
+                    logger.warning('NoSuch:%s:%s' % (mrn, name))
+
+    
+
+    
+    
+    # for file in findFiles:
+    #     print(file)
+    #     shutil.copy(file, os.path.join(exportDir,os.path.basename(file)))
+
+    logger.info(len(findFiles))
+    logger.warning(len(noFindF))
 
 
 if __name__ == "__main__":
@@ -63,5 +139,6 @@ if __name__ == "__main__":
     logger.addHandler(ch)
 
     logger.info('begin!')
-    RetorePinnPatients(PINN_TRA_PATH, WANTED_LIST,
-                       LOCAL_DIR_PATH, logger, False)
+    # RetorePinnPatients(PINN_TRA_PATH, WANTED_LIST,
+    #                    LOCAL_DIR_PATH, logger, False)
+    restPatBatch(WANTED_LIST,PINN_TRA_PATH,EXPORT_PATH,logger)
