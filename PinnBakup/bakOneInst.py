@@ -7,6 +7,7 @@ import os
 import re
 import glob
 import shutil
+import time
 from bakupOnePinnPatient import bakupOnePinnPatient
 
 def bakOneInst(instPath,exportPath):
@@ -39,9 +40,18 @@ def bakOneInst(instPath,exportPath):
 if __name__ == "__main__":
     workPath = "/home/p3rtp/bin/bakup/"    
     headInfo = os.path.join(workPath, 'institution')
-    # exportPath = os.path.join(workPath, 'export')
-    exportPath = '/mnt/bak/bakup/temp'
-    instPath   = '/pinnacle_patient_expansion/NewPatients/Institution_3364'
 
+    # exportPath = os.path.join(workPath, 'export')
+    # bakOneInst(os.path.join(workPath, 'Mount_0'), exportPath)
+    timenow =  time.localtime(time.time())
+    print(time.strftime("%Y-%m-%d-%H:%M:%s",timenow))
+    
+    exportPath = '/mnt/bak/bakup/temp3195'
+    # instPath   = '/pinnacle_patient_expansion/NewPatients/Institution_3196'
+    instPath   = '/mnt/bak/bakup/Institution_3454'
     bakOneInst(instPath, exportPath)
+
+    timenow =  time.localtime(time.time())
+    print(time.strftime("%Y-%m-%d-%H:%M:%s",timenow))
+    
 

@@ -155,8 +155,7 @@ class bakupOnePinnPatient(object):
         tarName = patient_info['PatientID'] + '_' + \
             patient_info['MedicalRecordNumber'] + '_' + \
             patient_info['LastName'] + patient_info['FirstName'] + '_' + \
-            patient_info['MiddleName'] + '_' + \
-            str(random.randint(1, 1000)) + '.gtar'
+            patient_info['MiddleName'] + '.gtar'
 
         tarName = ''.join(tarName.split())
         tarName = re.sub('%', '', tarName)
