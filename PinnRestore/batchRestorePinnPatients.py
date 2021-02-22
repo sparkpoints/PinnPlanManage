@@ -19,7 +19,7 @@ WORKING_PATH = '/home/pyang/PinnWork/'
 LOCAL_DIR_PATH = os.path.join(WORKING_PATH, 'export')
 WANTED_LIST = os.path.join(WORKING_PATH, 'WantedList.CSV')
 
-EXPORT_PATH = '/mnt/g/export/'
+EXPORT_PATH = '/mnt/g/export3/'
 
 FTP_IP = '172.31.28.202'
 FTP_USER = 'p3rtp'
@@ -103,12 +103,12 @@ def restPatBatch(restListFile,oriDataPool,exportDir,logger):
                                     os.path.join(exportDir, file))
                         logger.info('Find:%s:%s:%s' % (mrn, name, file))
                         break
-                    elif (mrnStr in file.lower()) or (nameStr in file.lower()):
-                        findMark = 1
-                        findFiles.append(file)
-                        shutil.copy(os.path.join(root, file),
-                                    os.path.join(exportDir, file))
-                        logger.info('Find:%s:%s:%s' % (mrn, name,file))
+                    # elif (mrnStr in file.lower()) or (nameStr in file.lower()):
+                    #     findMark = 1
+                    #     findFiles.append(file)
+                    #     shutil.copy(os.path.join(root, file),
+                    #                 os.path.join(exportDir, file))
+                    #     logger.info('Find:%s:%s:%s' % (mrn, name,file))
 
                 if not findMark:
                     noFindF.append(mrn)
